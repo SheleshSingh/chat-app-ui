@@ -4,10 +4,12 @@ import Card from "../shared/Card";
 import { useContext, useState } from "react";
 import Dashboard from "./Dashboard";
 import Context from "../../Context";
+import httpInterceptor from "../../lib/httpInterceptor";
+import { v4 as uuid } from "uuid"
 
 const Layout = () => {
   const [leftAsideSize, setLeftAsideSize] = useState(300);
-  const { session } = useContext(Context)
+  const { session, setSession } = useContext(Context)
 
   const rightAsideSize = 400;
   const collapseSize = 140;
@@ -37,6 +39,40 @@ const Layout = () => {
     return finalPath;
   };
 
+  const uploadImage = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.click();
+    input.onchange = async () => {
+      if (!input.files)
+        return;
+
+      const file = input.files[0]
+      const path = `profile-picture${uuid()}.png`
+      const payload = {
+        path,
+        type: file.type
+      }
+      try {
+        const options = {
+          headers: {
+            "Content-Type": file.type
+          }
+        }
+        const { data } = await httpInterceptor.post("/storage/upload", payload)
+        await httpInterceptor.put(data.url, file, options)
+        const { data: user } = await httpInterceptor.put("/auth/profile-picture", { path })
+        setSession({ ...session, image: user.image })
+
+      }
+      catch (err) {
+        console.log(err);
+      }
+    }
+
+  }
+
   return (
     <div className="bg-stale-200 min-h-screen">
       <aside
@@ -56,9 +92,10 @@ const Layout = () => {
                 <Avatar
                   title={session.fullname}
                   subtitle={session.email}
-                  image="/images/avt.avif"
+                  image={session.image || "/images/avt.avif"}
                   titleColor="#ffffff"
                   subtitleColor="#ddd"
+                  onClick={uploadImage}
                 />
               }
             </div>

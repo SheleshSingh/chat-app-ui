@@ -7,7 +7,8 @@ interface AvatarInterface {
   titleColor?: string;
   subtitleColor?: string;
   size?: "lg" | "md";
-  key?: string | number
+  key?: string | number;
+  onClick?: () => void;
 }
 
 const Avatar: FC<AvatarInterface> = ({
@@ -17,12 +18,14 @@ const Avatar: FC<AvatarInterface> = ({
   titleColor = "#000000",
   subtitleColor = "#f5f5f5",
   size = "lg",
-  key = 0
+  key = 0,
+  onClick
 }) => {
   return (
     <div key={key} className="flex gap-3 items-center">
       {image && (
         <img
+          onClick={onClick}
           src={image}
           alt=""
           className={`${size === "lg" ? "w-12 h-12" : "w-8 h-8"} rounded-full object-cover`}
@@ -37,7 +40,7 @@ const Avatar: FC<AvatarInterface> = ({
           >
             {title}
           </h1>
-          <div className="text-sm font-medium" style={{ color: subtitleColor }}>
+          <div className="text-xs font-medium" style={{ color: subtitleColor }}>
             {subtitle}
           </div>
         </div>
