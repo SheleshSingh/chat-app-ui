@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const httpInterceptor = axios.create({
+const HttpInterceptor = axios.create({
     baseURL: "http://localhost:8080",
     withCredentials: true
 })
 
-export default httpInterceptor
+export default HttpInterceptor

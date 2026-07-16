@@ -3,7 +3,7 @@ import Button from "./shared/Button"
 import Card from "./shared/Card"
 import Input from "./shared/Input"
 import Form, { type FormDataType } from "./shared/Form"
-import httpInterceptor from "../lib/httpInterceptor"
+import httpInterceptor from "../lib/HttpInterceptor"
 import CatchError from "../lib/CatchError"
 
 const Login = () => {

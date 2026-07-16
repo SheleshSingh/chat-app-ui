@@ -4,7 +4,7 @@ import Card from "./shared/Card"
 import Input from "./shared/Input"
 import type { FormDataType } from "./shared/Form"
 import Form from "./shared/Form"
-import httpInterceptor from "../lib/httpInterceptor"
+import httpInterceptor from "../lib/HttpInterceptor"
 
 const Signup = () => {
   const navigate = useNavigate()

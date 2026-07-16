@@ -1,19 +1,36 @@
-import { Link, Outlet, useLocation } from "react-router";
+import { Link, Outlet, useLocation, useNavigate } from "react-router";
 import Avatar from "../shared/Avatar";
 import Card from "../shared/Card";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Dashboard from "./Dashboard";
 import Context from "../../Context";
-import httpInterceptor from "../../lib/httpInterceptor";
 import { v4 as uuid } from "uuid"
+import HttpInterceptor from "../../lib/HttpInterceptor";
+import useSWR, { mutate } from "swr";
+import Fetcher from "../../lib/Fetcher";
+import CatchError from "../../lib/CatchError";
+
+const EightMinutInMs = 8 * 60 * 1000
 
 const Layout = () => {
   const [leftAsideSize, setLeftAsideSize] = useState(300);
   const { session, setSession } = useContext(Context)
+  const { pathname } = useLocation();
+  const navigate = useNavigate()
+
+  const { error } = useSWR("/auth/refresh-token", Fetcher, {
+    refreshInterval: EightMinutInMs,
+    shouldRetryOnError: false
+  })
+
+  useEffect(() => {
+    if (error) {
+      logout()
+    }
+  }, [error])
 
   const rightAsideSize = 400;
   const collapseSize = 140;
-  const { pathname } = useLocation();
 
   const menus = [
     {
@@ -32,6 +49,16 @@ const Layout = () => {
       icon: "ri-group-line",
     },
   ];
+
+  const logout = async () => {
+    try {
+      await HttpInterceptor.post("auth/logout")
+      navigate("/login")
+    }
+    catch (err) {
+      CatchError(err)
+    }
+  }
 
   const getPathname = (path: string) => {
     const firstPath = path.split("/").pop();
@@ -60,10 +87,11 @@ const Layout = () => {
             "Content-Type": file.type
           }
         }
-        const { data } = await httpInterceptor.post("/storage/upload", payload)
-        await httpInterceptor.put(data.url, file, options)
-        const { data: user } = await httpInterceptor.put("/auth/profile-picture", { path })
+        const { data } = await HttpInterceptor.post("/storage/upload", payload)
+        await HttpInterceptor.put(data.url, file, options)
+        const { data: user } = await HttpInterceptor.put("/auth/profile-picture", { path })
         setSession({ ...session, image: user.image })
+        mutate("/auth/refresh-token")
 
       }
       catch (err) {
@@ -116,7 +144,7 @@ const Layout = () => {
               </Link>
             ))}
 
-            <button className="flex items-center gap-3 text-gray-300 py-2 hover:text-white">
+            <button onClick={logout} className="flex items-center gap-3 text-gray-300 py-2 hover:text-white">
               <i className="ri-logout-circle-r-line text-xl"></i>
               <label
                 className={`${leftAsideSize === collapseSize ? "hidden" : ""}`}
