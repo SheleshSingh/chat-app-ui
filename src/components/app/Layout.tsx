@@ -9,6 +9,7 @@ import HttpInterceptor from "../../lib/HttpInterceptor";
 import useSWR, { mutate } from "swr";
 import Fetcher from "../../lib/Fetcher";
 import CatchError from "../../lib/CatchError";
+import FriendSuggestion from "./FriendSuggestion";
 
 const EightMinutInMs = 8 * 60 * 1000
 
@@ -191,29 +192,10 @@ const Layout = () => {
         </Card>
       </section>
       <aside
-        style={{ width: rightAsideSize }}
-        className="h-full p-6 absolute top-0 right-0 overflow-auto space-y-8"
+        className="h-full p-8 absolute top-0 right-0 overflow-auto space-y-8"
+        style={{ width: rightAsideSize,transition:"0.2s" }}
       >
-        <div className="h-62.5 overflow-auto">
-          <Card title="suggested" divider>
-            <div className="space-y-6">
-              {
-                Array(5).fill(0).map((item, index) => (
-                  <div key={index} className="flex gap-4">
-                    <img src="/images/avt.avif" alt="avt.avif" className="w-16 h-16 rounded object-cover" />
-                    <div>
-                      <h1 className="text-black font-medium">Er Shelesh mathur</h1>
-                      <button className="font-medium bg-green-400 text-white px-2 py-1 text-xs rounded hover:bg-green-500 mt-1">
-                        <i className="ri-user-add-line mr-1"></i>
-                        Add Friend
-                      </button>
-                    </div>
-                  </div>
-                ))
-              }
-            </div>
-          </Card>
-        </div>
+       <FriendSuggestion/>
 
         <Card title="Friends" divider>
           <div className="space-y-5">
