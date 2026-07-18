@@ -12,7 +12,8 @@ interface ButtonInterface {
   | "warning";
   onClick?: () => void;
   icon?: string;
-  key?: string | number
+  key?: string | number;
+  loading?: boolean
 }
 
 const buttonVariants = {
@@ -30,8 +31,18 @@ const Button: FC<ButtonInterface> = ({
   type = "primary",
   icon,
   onClick,
-  key = 0
+  key = 0,
+  loading = false
 }) => {
+
+  if (loading) {
+    return(
+      <button disabled className="flex gap-1 text-gray-400">
+        <i className="ri-loader-4-line animate-spin block"></i>
+        Processing...
+        </button>
+    )
+  }
   return (
     <button
       key={key}

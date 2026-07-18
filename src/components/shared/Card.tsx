@@ -1,7 +1,7 @@
 import type { FC, ReactElement, ReactNode } from "react";
 
 interface CradInterface {
-  children?: ReactElement;
+  children?: ReactNode;
   title?: ReactNode;
   footer?: ReactElement;
   divider?: boolean;
