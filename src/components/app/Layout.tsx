@@ -77,10 +77,11 @@ const Layout = () => {
         return;
 
       const file = input.files[0]
-      const path = `profile-picture${uuid()}.png`
+      const path = `profile-pictures/${uuid()}.png`
       const payload = {
         path,
-        type: file.type
+        type: file.type,
+        status:"public-read"
       }
       try {
         const options = {
