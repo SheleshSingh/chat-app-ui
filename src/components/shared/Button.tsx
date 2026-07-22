@@ -10,6 +10,7 @@ interface ButtonInterface {
   | "danger"
   | "dark"
   | "warning";
+  size?: "sm" | "md" | "lg"
   onClick?: () => void;
   icon?: string;
   key?: string | number;
@@ -26,28 +27,35 @@ const buttonVariants = {
   info: "bg-cyan-500 text-white hover:bg-cyan-600",
 };
 
+const buttonSizes = {
+  sm: "py-0.5 px-2 text-xs",
+  md: "py-1.5 px-4 text-sm",
+  lg: "py-2 px-6 text-base",
+};
+
 const Button: FC<ButtonInterface> = ({
   children = null,
   type = "primary",
   icon,
   onClick,
   key = 0,
-  loading = false
+  loading = false,
+  size = "md"
 }) => {
 
   if (loading) {
-    return(
+    return (
       <button disabled className="flex gap-1 text-gray-400">
         <i className="ri-loader-4-line animate-spin block"></i>
         Processing...
-        </button>
+      </button>
     )
   }
   return (
     <button
       key={key}
       onClick={onClick}
-      className={`py-2 px-6 rounded ${buttonVariants[type]}`}
+      className={`py-2 px-4 rounded ${buttonVariants[type]} ${buttonSizes[size]}`}
     >
       {icon && <i className={`ri-${icon} mr-2`}></i>}
       {children}

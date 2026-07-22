@@ -10,6 +10,7 @@ import useSWR, { mutate } from "swr";
 import Fetcher from "../../lib/Fetcher";
 import CatchError from "../../lib/CatchError";
 import FriendSuggestion from "./FriendSuggestion";
+import FriendRequest from "./FriendRequest";
 
 const EightMinutInMs = 8 * 60 * 1000
 
@@ -81,7 +82,7 @@ const Layout = () => {
       const payload = {
         path,
         type: file.type,
-        status:"public-read"
+        status: "public-read"
       }
       try {
         const options = {
@@ -194,9 +195,10 @@ const Layout = () => {
       </section>
       <aside
         className="h-full p-8 absolute top-0 right-0 overflow-auto space-y-8"
-        style={{ width: rightAsideSize,transition:"0.2s" }}
+        style={{ width: rightAsideSize, transition: "0.2s" }}
       >
-       <FriendSuggestion/>
+        <FriendSuggestion />
+        <FriendRequest />
 
         <Card title="Friends" divider>
           <div className="space-y-5">

@@ -16,16 +16,16 @@ interface LoadingInterface {
   index: null | number
 }
 
-const FriendSuggestion = () => {
+const FriendRequest = () => {
   const [loading, setLoadind] = useState<LoadingInterface>({ state: false, index: 0 })
-  const { data, error, isLoading } = useSWR("/friend/suggestion", Fetcher)
+  const { data, error, isLoading } = useSWR("/friend/request", Fetcher)
 
-  const sendFriendRequest = async (id: string, index: number) => {
+  const acceptFriendRequest = async (id: string, index: number) => {
     try {
       setLoadind({ state: true, index })
-      await HttpInterceptor.post("/friend", { friend: id })
-      toast("Friend request sent !", { position: "top-center" })
-      mutate("/friend/suggestion")
+      await HttpInterceptor.put(`/friend/${id}`, { status: "accepted" })
+      toast("Friend request accepted !", { position: "top-center" })
+      mutate("/friend/request")
       mutate("/friend")
 
     }
@@ -40,7 +40,7 @@ const FriendSuggestion = () => {
   return (
     <div className="h-62.5 overflow-auto">
 
-      <Card title="suggested" divider>
+      <Card title="Friend's request" divider>
         {
           isLoading && <Skeleton active />
         }
@@ -56,16 +56,24 @@ const FriendSuggestion = () => {
               data.map((item: any, index: number) => (
                 <div className="space-y-2">
                   <div key={index} className="flex gap-3 items-center">
-                    <img src={item.image || "/images/avt.avif"}
+                    <img src={item.user.image || "/images/avt.avif"}
                       alt="avt.avif"
                       className="w-12 h-12 rounded object-cover"
                     />
                     <div>
-                      <h1 className="text-black font-medium capitalize">{item.fullname}</h1>
+                      <h1 className="text-black font-medium capitalize">{item.user.fullname}</h1>
                       <small>{moment(item.createdAt).format("DD MMM, YYYY")}</small>
                     </div>
                   </div>
-                  <Button size="sm" loading={loading.state && loading.index === index} onClick={() => sendFriendRequest(item._id, index)} type="primary" icon="user-add-line">Add Friend</Button>
+                  <Button
+                    size="sm"
+                    loading={loading.state && loading.index === index}
+                    onClick={() => acceptFriendRequest(item._id, index)}
+                    type="danger"
+                    icon="check-double-line"
+                  >
+                    Accept
+                  </Button>
                 </div>
               ))
             }
@@ -79,4 +87,4 @@ const FriendSuggestion = () => {
   )
 }
 
-export default FriendSuggestion
+export default FriendRequest
